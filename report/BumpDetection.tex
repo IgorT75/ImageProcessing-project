@@ -1,0 +1,84 @@
+\documentclass[14pt, letterpaper]{article}
+\makeatletter
+\def\sectionsuffix{.}
+
+\renewcommand\@seccntformat[1]{\csname the#1\endcsname%
+	\csname#1suffix\endcsname\quad}
+\makeatother
+
+%opening
+\title{Bump detection algorithm - due on 9/22}
+\author{Igor Trubnikov}
+%\date{}
+
+\input{common.sty}
+\usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+	pdftitle={Sharelatex Example},
+	bookmarks=true,
+	%pdfpagemode=FullScreen,
+}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+Write a Matlab code to generate a zig-zag sequence of DCT coefficients and apply it to slide\#25
+of Lecture\#4 to generate the following sequence in slide\#34.\\
+-26* -3 1 -3 -2 -6 2 -4 1 -4 1 1 5 0 2 0 0 -1 2 0 0 0 0 0 -1 -1 EOB\\
+(: DC in the prev block is assumed -17 for DPCM)\\\\
+\bd{Solution:}\\Please find Matlab code below.\\
+It's also attached - see file \bd{Problem1.m}.
+%\lstinputlisting[language=MATLAB]{../Problem1/Problem1.m}
+
+\newpage
+
+\section{Description of the algorithm}
+Debug the Matlab code below for Huffman coding of DC coefficients and show the working code
+and indicate where you made modification(s)
+%\lstinputlisting[language=MATLAB]{../Problem2/Problem2_original.m}
+\bd{Solution:}
+\\Found following issues in the code:
+\begin{enumerate}
+	\item There is a mistake in the definition of table matrix - table below shows that value in the 1st column in 6th row should be 3, not 5.\\
+	\item I also had to add \mcode{endif} to the definition of \mcode{jpg\_dc\_enc} function.\\
+	As far as I understand it's supposed to return category number from the Table \ref{tab:categories}.\\
+	But somehow there are 2 branches of \mcode{if} one of which returns \mcode{[0 1 0]} (which is a base code for \mcode{0} while another assigns \mcode{floor(log2(abs(x)))+1} to \mcode{c} variable.\\\\I assumed that it's supposed to return category number - see the corrected code.\\
+	\begin{table}[!htbp]
+		\centering
+		%\includegraphics[totalheight=8cm]{./images/JPEGCoefCodingCategories.jpg}
+		\caption{JPEG coefficient coding categories.}
+		\label{tab:categories}
+	\end{table}
+	\item It looks like Octave does not have \mcode{int2bin} function implemented. I just assigned \mcode{tmp} to \mcode{[0 1 1 1]} in code manually to make it work.
+	\item Book says in example that -9 is represented as 0111 or rather \mcode{[0 1 1 1]} in MATLAB. So if leftmost bit is 0 then it's a negative number. Original code from the problem assumes opposite.
+	\item Book also says that: "For a general DC difference category (say, category $K$), an additional bits are needed and computed as either
+	the LSBs of the positive difference or the LSBs of the negative difference minus 1."\\
+	This means we should subtract \mcode{ones(1, c)} from \mcode{tmp(2:c+1)}. Original example assumes the opposite.
+	\item I also introduced \mcode{categoryToLength} array to encode length of each category - see Table \ref{tab:defaultDCcode}.\\
+	It's used to compute every bit of the LSBs value. Variable \mcode{LBSLength} represents length of the LBS bits sequence.
+	\begin{table}[!htbp]
+		\centering
+		%\includegraphics[totalheight=4cm]{./images/JpegDCEndTable.jpg}
+		\caption{JPEG default DC code (luminance).}
+		\label{tab:defaultDCcode}
+	\end{table}
+\end{enumerate}
+
+\section{Verification}
+All the changes described above are made - although there is a hardcode for particular number because I don't have \mcode{int2bin} function.\\
+Please find MATLAB code below. It's also attached to the homework - see file \bd{Problem2.m}.
+
+
+\section{Conclusion}
+Check it out
+
+\end{document}
