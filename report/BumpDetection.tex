@@ -19,9 +19,8 @@
 	linkcolor=blue,
 	filecolor=magenta,      
 	urlcolor=cyan,
-	pdftitle={Sharelatex Example},
+	pdftitle={Bump detection project},
 	bookmarks=true,
-	%pdfpagemode=FullScreen,
 }
 
 \begin{document}
@@ -31,54 +30,65 @@
 \newpage
 
 \section{Introduction}
-Write a Matlab code to generate a zig-zag sequence of DCT coefficients and apply it to slide\#25
-of Lecture\#4 to generate the following sequence in slide\#34.\\
--26* -3 1 -3 -2 -6 2 -4 1 -4 1 1 5 0 2 0 0 -1 2 0 0 0 0 0 -1 -1 EOB\\
-(: DC in the prev block is assumed -17 for DPCM)\\\\
-\bd{Solution:}\\Please find Python code below.\\
-It's also attached - see file \bd{Problem1.m}.
-%\lstinputlisting[language=MATLAB]{../Problem1/Problem1.m}
+The goal of this project is to develop a high performing low error rate algorithm which is able to detect bump-like features on the picture. Very often bumps are associated with defect on the product of technological operation.\\
+Bump-like defects can happen on electronic panels, mirrors and other surfaces.\\
+Detecting of these features may also potentially be useful in analyzing geo-mapping data (on Earth as well as on Mars or Moon).\\
 
 \newpage
 
 \section{Description of the algorithm}
-Debug the Matlab code below for Huffman coding of DC coefficients and show the working code
-and indicate where you made modification(s)
-%\lstinputlisting[language=MATLAB]{../Problem2/Problem2_original.m}
-\bd{Solution:}
-\\Found following issues in the code:
+
 \begin{enumerate}
-	\item There is a mistake in the definition of table matrix - table below shows that value in the 1st column in 6th row should be 3, not 5.\\
-	\item I also had to add \mcode{endif} to the definition of \mcode{jpg\_dc\_enc} function.\\
-	As far as I understand it's supposed to return category number from the Table \ref{tab:categories}.\\
-	But somehow there are 2 branches of \mcode{if} one of which returns \mcode{[0 1 0]} (which is a base code for \mcode{0} while another assigns \mcode{floor(log2(abs(x)))+1} to \mcode{c} variable.\\\\I assumed that it's supposed to return category number - see the corrected code.\\
-	\begin{table}[!htbp]
-		\centering
-		%\includegraphics[totalheight=8cm]{./images/JPEGCoefCodingCategories.jpg}
-		\caption{JPEG coefficient coding categories.}
-		\label{tab:categories}
-	\end{table}
-	\item It looks like Octave does not have \mcode{int2bin} function implemented. I just assigned \mcode{tmp} to \mcode{[0 1 1 1]} in code manually to make it work.
-	\item Book says in example that -9 is represented as 0111 or rather \mcode{[0 1 1 1]} in MATLAB. So if leftmost bit is 0 then it's a negative number. Original code from the problem assumes opposite.
-	\item Book also says that: "For a general DC difference category (say, category $K$), an additional bits are needed and computed as either
-	the LSBs of the positive difference or the LSBs of the negative difference minus 1."\\
-	This means we should subtract \mcode{ones(1, c)} from \mcode{tmp(2:c+1)}. Original example assumes the opposite.
-	\item I also introduced \mcode{categoryToLength} array to encode length of each category - see Table \ref{tab:defaultDCcode}.\\
-	It's used to compute every bit of the LSBs value. Variable \mcode{LBSLength} represents length of the LBS bits sequence.
-	\begin{table}[!htbp]
-		\centering
-		%\includegraphics[totalheight=4cm]{./images/JpegDCEndTable.jpg}
-		\caption{JPEG default DC code (luminance).}
-		\label{tab:defaultDCcode}
-	\end{table}
+	\item Apply \mcode{maximum\_filter} algorithm available in Python \mcode{scipy.ndimage} package.
+	\item Then find local maxima using code from \mcode{find\_local\_maxima\_np} function.
+	\item Process 8 neighboring pixels for each pixel in the image.
+	\item Iterate through each of a local maxima and prune the sub-maximal peaks.\\
+	This extends the neighborhood and combines and prunes away unwanted maxima using the noise tolerance to decide what counts and what doesn't.
 \end{enumerate}
 
-\section{Verification}
-All the changes described above are made - although there is a hardcode for particular number because I don't have \mcode{int2bin} function.\\
-Please find MATLAB code below. It's also attached to the homework - see file \bd{Problem2.m}.
+Following code assumes that name of input file is \bd{01\_Gray8bit.jpg} and that this image is 8-bit.
+\lstinputlisting[language=Python]{../tryPyImg.py}
+\newpage
 
+\section{Verification}
+Please see images in order of their processing.
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[totalheight=3cm]{./images/01_Gray8bit.jpg}
+	\caption{Original image.}
+	\label{fig:origImage}
+\end{figure}
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[totalheight=3cm]{./images/02_maxFlt.jpg}
+	\caption{Image after applying \mcode{maximum\_filter}.}
+	\label{fig:maxFltImage}
+\end{figure}
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[totalheight=3cm]{./images/03_LocalMax.jpg}
+	\caption{Binary image after applying local maxima technique.}
+	\label{fig:localMaxImage}
+\end{figure}
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[totalheight=3cm]{./images/04_FinalBumps.jpg}
+	\caption{Final image after optimization.}
+	\label{fig:finalImage}
+\end{figure}
+\newpage
 
 \section{Conclusion}
-Check it out
+Algorithm presented above is not universal. It produces false positives in some cases.\\
+The best feature of the algorithm is a usage of \mcode{maximum\_filter}.\\\\
+Other techniques worse trying are:
+\begin{itemize}
+	\item Try to split original image in few parts and analyze those parts separately.\\
+	Then combine bumps from different parts.\\
+	Splitting image will help to reduce the effect that one part of the image is much brighter then another.\\
+	And uneven brightness negatively affects algorithm.
+	\item Use histogram equalization before running algorithm. I tried and it did not go well.\\
+	Adaptive histogram equalization did not help either.
+\end{itemize}
 
 \end{document}

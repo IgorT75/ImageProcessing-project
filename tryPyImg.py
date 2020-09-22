@@ -1,6 +1,6 @@
 from scipy import misc
 import scipy.ndimage as nd
-import cv2
+#import cv2
 import sys
 import numpy as np
 import os
@@ -45,6 +45,7 @@ def find_local_maxima_np(img_data):
     
     #Filter data with maximum filter to find maximum filter response in each neighbourhood
     max_out = nd.filters.maximum_filter(img_data, size=3)
+    plt.imsave('02_maxFlt.jpg', max_out)
     #Find local maxima
     local_max = np.zeros((img_data.shape))
     local_max[max_out == img_data] = 1
@@ -58,7 +59,6 @@ img = Image.open(fname)#.convert("L");
 
 #Start of script
 ntol = 10 #Noise Tolerance.
-t1 = time.time()
 img_data = np.array(img)
 
 imShape = img_data.shape
@@ -66,25 +66,9 @@ img_data = prep.minmax_scale(img_data.ravel(), feature_range=(0,255)).reshape(im
 print("Shape: ", img_data.shape)
 print("Min: ", img_data.min(), "\nMax: ", img_data.max());
 
-# save original as 8-bit gray
-# img.putdata(img_data.astype('uint8').ravel())
-# fname = '01_Gray8bit.jpg'
-# img.save(fname)
-
-# histogram equalization
-# clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(16,16))
-# imgHistEq = clahe.apply(img_data)
-# img_data = np.asarray(imgHistEq)
-# plt.imsave("01_AdaptiveHistEqualized.png", imgHistEq, cmap='gray')
-# img = imgHistEq
-
-# read it back
-# img = Image.open(fname).convert("L");
-# img_data = np.asarray(img)
-
 # apply local_maxima function
 local_max = find_local_maxima_np(img_data)
-plt.imsave("02_LocalMax.png", local_max)
+plt.imsave("03_LocalMax.jpg", local_max)
 
 ############################################################################
 #Find local maxima coordinates
@@ -110,8 +94,7 @@ height = img_data.shape[0]
 dir_x = [0,  1,  1,  1,  0, -1, -1, -1]
 dir_y = [-1, -1,  0,  1,  1,  1,  0, -1]
 
-#At each stage we classify our pixels. We use 2n as we can use more than one definition
-#together.
+#At each stage we classify pixels.
 MAXIMUM = 1
 LISTED = 2
 PROCESSED = 4
@@ -255,18 +238,16 @@ for y0, x0, v0 in zip(ypts, xpts, ipts):
             y = int(pListy[nearestI])
             types[y,x] |= MAX_POINT
             
-                
-                   
             
 out = types==61
 ypts,xpts = np.where(out)
-t2 = time.time()
 print("count "+str(np.sum(out)))
-print("time: "+str(np.round(t2-t1,4))+' s')
 
-figsize = (12,12)
-plt.plot(xpts,ypts,'w+',markersize=10)
+plt.figure(figsize = (20,10))
+plt.axis('off')
+plt.plot(xpts,ypts,'w+',markersize=20)
 plt.imshow(img)
+plt.savefig('04_FinalBumps.jpg', format='jpg', bbox_inches='tight')
 
 #if __name__ == "__main__":
 #    main()
