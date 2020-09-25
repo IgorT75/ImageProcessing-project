@@ -1,4 +1,4 @@
-\documentclass[14pt, letterpaper]{article}
+\documentclass[letterpaper]{article}
 \makeatletter
 \def\sectionsuffix{.}
 
@@ -7,12 +7,14 @@
 \makeatother
 
 %opening
-\title{Bump detection algorithm - due on 9/22}
+\title{Bump detection algorithm - due on 9/24}
 \author{Igor Trubnikov, MS}
 %\date{}
 
 \input{common.sty}
+\usepackage[12pt]{extsizes}
 \usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
+\usepackage[margin=0.5in]{geometry}
 
 \hypersetup{
 	colorlinks=true,
@@ -20,7 +22,6 @@
 	filecolor=magenta,      
 	urlcolor=cyan,
 	pdftitle={Bump detection project},
-	bookmarks=true,
 }
 
 \begin{document}
@@ -46,17 +47,23 @@ Detecting of these features may also potentially be useful in analyzing geo-mapp
 	This extends the neighborhood and combines and prunes away unwanted maxima using the noise tolerance to decide what counts and what doesn't.
 \end{enumerate}
 
-Following code assumes that name of input file is \bd{01\_Gray8bit.jpg} and that this image is 8-bit.
-\lstinputlisting[language=Python]{../bump_detect.py}
+Following code assumes that name of input file is \bd{01\_Gray8bit.jpg} and that this image is 8-bit. It was converted to 8-bit image from original Image1.gif file.
+\lstinputlisting[language=Python]{../bump\_detect.py}
 \newpage
 
 \section{Verification}
 Please see images in order of their processing.
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[totalheight=3cm]{./images/01_Gray8bit.jpg}
+	\includegraphics[totalheight=3cm]{./images/Image1.jpg}
 	\caption{Original image.}
 	\label{fig:origImage}
+\end{figure}
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[totalheight=3cm]{./images/01_Gray8bit.jpg}
+	\caption{Original image in gray scale 8-bit.}
+	\label{fig:origImageGray}
 \end{figure}
 \begin{figure}[!htbp]
 	\centering
@@ -73,7 +80,7 @@ Please see images in order of their processing.
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[totalheight=3cm]{./images/04_FinalBumps.jpg}
-	\caption{Final image after optimization.}
+	\caption{Final image after run of algorithm with cross marks on the detected bumps.}
 	\label{fig:finalImage}
 \end{figure}
 \newpage

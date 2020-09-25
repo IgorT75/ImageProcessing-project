@@ -70,7 +70,7 @@ print("Min: ", img_data.min(), "\nMax: ", img_data.max());
 local_max = find_local_maxima_np(img_data)
 plt.imsave("03_LocalMax.jpg", local_max)
 
-############################################################################
+####################################
 #Find local maxima coordinates
 ypts, xpts = np.where(local_max == 1)
 #Find the corresponding intensities
@@ -197,7 +197,8 @@ for y0, x0, v0 in zip(ypts, xpts, ipts):
             t4 = time.time()
             time_array.append(t4-t3)
         #if sortingError:
-            #If our point x0, y0 was not true maxima and we reach a bigger one, start again.
+            #If our point x0, y0 was not true maxima and 
+            #we reach a bigger one, start again.
             #for listI in range(0,Listlen):
         #   types[pListy[0:listlen],pListx[0:listlen]] =0
         #else:
@@ -212,7 +213,7 @@ for y0, x0, v0 in zip(ypts, xpts, ipts):
         minDist2 = 1e20
         nearestI = 0
 
-        #This makes sure it has same output as the fiji plugin. Not strictly needed.
+        #This makes sure it has same output as the fiji plugin.
         xEqual = round(xEqual)
         yEqual = round(yEqual)
 
@@ -228,7 +229,8 @@ for y0, x0, v0 in zip(ypts, xpts, ipts):
 
             #This is where we assign the actual maxima location.
             dv =  (types[y,x]&EQUAL) !=0
-            dist2 = (xEqual-x[dv]).astype(np.float64)**2+(yEqual-y[dv]).astype(np.float64)**2
+            dist2 = (xEqual-x[dv]).astype(np.float64)**2+\
+                (yEqual-y[dv]).astype(np.float64)**2
 
             indx = np.arange(0,listlen)
             rd_indx = indx[dv]
