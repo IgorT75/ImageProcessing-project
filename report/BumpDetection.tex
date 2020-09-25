@@ -1,4 +1,4 @@
-\documentclass[letterpaper]{article}
+\documentclass[letterpaper, 14pt]{article}
 \makeatletter
 \def\sectionsuffix{.}
 
@@ -7,18 +7,17 @@
 \makeatother
 
 %opening
-\title{Bump detection algorithm - due on 9/24}
+\title{Bump detection algorithm project}
 \author{Igor Trubnikov, MS}
 %\date{}
 
 \input{common.sty}
-\usepackage[12pt]{extsizes}
 \usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
 
 \hypersetup{
 	colorlinks=true,
 	linkcolor=blue,
-	filecolor=magenta,      
+	filecolor=magenta,
 	urlcolor=cyan,
 	pdftitle={Bump detection project},
 }
@@ -30,7 +29,7 @@
 \newpage
 
 \section{Introduction}
-The goal of this project is to develop a high performing low error rate algorithm which is able to detect bump-like features on the picture. Very often bumps are associated with defect on the product of technological operation.\\
+The goal of this project is to develop a high performing low-error-rate algorithm which is able to detect bump-like features on the picture. Very often bumps are associated with defects on the product of technological operation.\\
 Bump-like defects can happen on electronic panels, mirrors and other surfaces.\\
 Detecting of these features may also potentially be useful in analyzing geo-mapping data (on Earth as well as on Mars or Moon).\\
 
@@ -43,7 +42,7 @@ Detecting of these features may also potentially be useful in analyzing geo-mapp
 	\item Then find local maxima using code from \mcode{find\_local\_maxima\_np} function.
 	\item Process 8 neighboring pixels for each pixel in the image.
 	\item Iterate through each of a local maxima and prune the sub-maximal peaks.\\
-	This extends the neighborhood and combines and prunes away unwanted maxima using the noise tolerance to decide what counts and what doesn't.
+	This extends the neighborhood, combines and prunes away unwanted maxima using the noise tolerance to decide what counts and what not.
 \end{enumerate}
 
 Following code assumes that name of input file is \bd{01\_Gray8bit.jpg} and that this image is 8-bit. It was converted to 8-bit image from the original Image1.jpg file.
@@ -51,7 +50,7 @@ Following code assumes that name of input file is \bd{01\_Gray8bit.jpg} and that
 \newpage
 
 \section{Verification}
-Please see images in order of their processing.
+Below are few images each representing original image as it appears after running of particular stage of algorithm.
 \begin{figure}[!htbp]
 	\centering
 	\includegraphics[totalheight=3cm]{./images/Image1.jpg}
